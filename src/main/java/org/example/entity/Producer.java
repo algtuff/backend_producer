@@ -2,8 +2,6 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 
-import org.example.entity.Movie;
-
 @Entity
 public class Producer {
 

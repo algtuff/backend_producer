@@ -8,8 +8,6 @@ import org.example.exception.ProducerNotFoundException;
 import org.example.repository.ProducerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-
 import static org.example.constants.ApplicationConstants.*;
 
 @Service

@@ -4,8 +4,6 @@ import org.example.entity.Movie;
 import org.example.service.MovieService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-
 import static org.example.constants.ApplicationConstants.BY_ID;
 import static org.example.constants.ApplicationConstants.MOVIES;
 

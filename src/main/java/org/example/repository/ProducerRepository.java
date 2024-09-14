@@ -1,7 +1,6 @@
 package org.example.repository;
 
 import jakarta.persistence.Tuple;
-import org.example.dto.WinnerDTO;
 import org.example.entity.Producer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
