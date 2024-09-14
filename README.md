@@ -1,358 +1,113 @@
 # Sobre a API
 
-Esta API foi construida de acordo com as especificação do teste.
-e possibilitar a leitura da lista de indicados e vencedores
-da categoria Pior Filme do Golden Raspberry Awards.
+Esta API foi construida de acordo com as especificações do teste.
 
-### Para rodar a API, basta clonar o repositório e executar o comando abaixo:
+Os dados são armazenados em memória, carregados a partir do arquivo "movielist.csv" 
+localizado na pasta src/main/resources. O arquivo é carregado na inicialização da aplicação e 
+contém uma lista de filmes indicados ao Golden Raspberry Awards.
 
-mvn spring-boot:run
+A API foi construída utilizando o framework Spring Boot.
 
-# REST API example application
+## Repositório da API
 
-This is a bare-bones example of a Sinatra application providing a REST
-API to a DataMapper-backed model.
+A API está localizada no repositório:
 
-The entire application is contained within the `app.rb` file.
+    https://github.com/algtuff/backend_producer
 
-`config.ru` is a minimal Rack configuration for unicorn.
+## Para rodar a API, basta clonar o repositório e executar o comando abaixo:
 
-`run-tests.sh` runs a simplistic test and generates the API
-documentation below.
+    mvn spring-boot:run
 
-It uses `run-curl-tests.rb` which runs each command defined in
-`commands.yml`.
+## Para rodar os testes, execute o comando abaixo:
 
-## Install
-
-    bundle install
-
-## Run the app
-
-    unicorn -p 7000
-
-## Run the tests
-
-    ./run-tests.sh
+    mvn test
 
 # REST API
 
-The REST API to the example app is described below.
+A API disponibiliza um endpoint para obter a lista de produtores com maior intervalo entre dois prêmios consecutivos, e o que
+obteve dois prêmios mais rápido.
 
-## Get list of Things
+## Obtendo a lista de produtores com maior intervalo entre dois prêmios consecutivos e os que obtiveram dois prêmios mais rápido
 
 ### Request
 
-`GET /thing/`
+`GET /producers/winner/min-max-interval`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
+    curl -i -H 'Accept: application/json' http://localhost:8080/producers/winner/min-max-interval
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 200 OK
-    Connection: close
+    HTTP/1.1 200
     Content-Type: application/json
-    Content-Length: 2
+    Transfer-Encoding: chunked
+    Date: Sat, 14 Sep 2024 20:34:32 GMT
+    
+    {"min":[{"producer":"Joel Silver","interval":1,"previousWin":1990,"followingWin":1991}],"max":[{"producer":"Matthew Vaughn","interval":13,"previousWin":2002,"followingWin":2015}]}
 
-    []
-
-## Create a new Thing
+## Obtendo a lista de produtores cadastrados
 
 ### Request
 
-`POST /thing/`
+`GET /producers`
 
-    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:7000/thing
+    curl -i -H 'Accept: application/json' http://localhost:8080/producers
 
 ### Response
 
-    HTTP/1.1 201 Created
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 201 Created
-    Connection: close
+    HTTP/1.1 200
     Content-Type: application/json
-    Location: /thing/1
-    Content-Length: 36
+    Transfer-Encoding: chunked
+    Date: Sat, 14 Sep 2024 20:37:07 GMT
+    
+    [{"id":1,"name":"Allan Carr"},{"id":2,"name":"Jerry Weintraub"},{...}]
 
-    {"id":1,"name":"Foo","status":"new"}
-
-## Get a specific Thing
+## Obtendo um produtor específico
 
 ### Request
 
-`GET /thing/id`
+`GET /producers/{id}`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+    curl -i -H 'Accept: application/json' http://localhost:8080/producers/1
 
 ### Response
 
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 200 OK
-    Connection: close
+    HTTP/1.1 200 
     Content-Type: application/json
-    Content-Length: 36
+    Transfer-Encoding: chunked
+    Date: Sat, 14 Sep 2024 20:38:56 GMT
+    
+    {"id":1,"name":"Allan Carr"}
 
-    {"id":1,"name":"Foo","status":"new"}
-
-## Get a non-existent Thing
+## Obtendo a lista de filmes cadastrados
 
 ### Request
 
-`GET /thing/id`
+`GET /movies`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/9999
+    curl -i -H 'Accept: application/json' http://localhost:8080/movies
 
 ### Response
 
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 404 Not Found
-    Connection: close
+    HTTP/1.1 200
     Content-Type: application/json
-    Content-Length: 35
+    Transfer-Encoding: chunked
+    Date: Sat, 14 Sep 2024 20:40:13 GMT
+    
+    [{"movieId":1,"title":"Can't Stop the Music","movieYear":1980,"studio":"Associated Film Distribution","winner":true,"producers":[{"id":1,"name":"Allan Carr"}]},{...}]
 
-    {"status":404,"reason":"Not found"}
-
-## Create another new Thing
+## Obtendo um filme específico
 
 ### Request
 
-`POST /thing/`
+`GET /movies/{id}`
 
-    curl -i -H 'Accept: application/json' -d 'name=Bar&junk=rubbish' http://localhost:7000/thing
+    curl -i -H 'Accept: application/json' http://localhost:8080/movies/1
 
 ### Response
 
-    HTTP/1.1 201 Created
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 201 Created
-    Connection: close
+    HTTP/1.1 200
     Content-Type: application/json
-    Location: /thing/2
-    Content-Length: 35
-
-    {"id":2,"name":"Bar","status":null}
-
-## Get list of Things again
-
-### Request
-
-`GET /thing/`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 74
-
-    [{"id":1,"name":"Foo","status":"new"},{"id":2,"name":"Bar","status":null}]
-
-## Change a Thing's state
-
-### Request
-
-`PUT /thing/:id/status/changed`
-
-    curl -i -H 'Accept: application/json' -X PUT http://localhost:7000/thing/1/status/changed
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
-
-    {"id":1,"name":"Foo","status":"changed"}
-
-## Get changed Thing
-
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
-
-    {"id":1,"name":"Foo","status":"changed"}
-
-## Change a Thing
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed2"}
-
-## Attempt to change a Thing using partial params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'status=changed3' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed3"}
-
-## Attempt to change a Thing using invalid params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'id=99&status=changed4' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed4"}
-
-## Change a Thing using the _method hack
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Baz&_method=PUT' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Baz","status":"changed4"}
-
-## Change a Thing using the _method hack in the url
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Qux' http://localhost:7000/thing/1?_method=PUT
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: text/html;charset=utf-8
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 204 No Content
-    Connection: close
-
-
-## Try to delete same Thing again
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Get deleted Thing
-
-### Request
-
-`GET /thing/1`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing using the _method hack
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X POST -d'_method=DELETE' http://localhost:7000/thing/2/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 204 No Content
-    Connection: close
+    Transfer-Encoding: chunked
+    Date: Sat, 14 Sep 2024 20:41:17 GMT
+    
+    {"movieId":1,"title":"Can't Stop the Music","movieYear":1980,"studio":"Associated Film Distribution","winner":true,"producers":[{"id":1,"name":"Allan Carr"}]}
