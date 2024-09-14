@@ -3,17 +3,16 @@ package org.example.controller;
 import org.example.dto.WinnerMaxMinDTO;
 import org.example.entity.Producer;
 import org.example.service.ProducerService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.example.constants.ApplicationConstants.*;
 
 @RestController
-@RequestMapping("/producers")
+@RequestMapping(PRODUCERS)
 public record ProducerController(ProducerService producerService) {
 
     @PostMapping
+    @ResponseStatus(code = org.springframework.http.HttpStatus.CREATED)
     public Producer save(@RequestBody Producer producer) {
         return producerService.save(producer);
     }
@@ -23,7 +22,17 @@ public record ProducerController(ProducerService producerService) {
         return producerService.findAll();
     }
 
-    @GetMapping("/winners")
+    @GetMapping(BY_ID)
+    public Producer findById(@PathVariable Long id) {
+        return producerService.findById(id);
+    }
+
+    @PutMapping(BY_ID)
+    public Producer update(@PathVariable Long id, @RequestBody Producer producer) {
+        return producerService.update(id, producer);
+    }
+
+    @GetMapping(WINNER + MIN_MAX_INTERVAL)
     public WinnerMaxMinDTO findWinnerMaxMinInterval() {
         return producerService.findWinnerMaxMinInterval();
     }

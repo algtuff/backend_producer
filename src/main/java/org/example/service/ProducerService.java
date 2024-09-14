@@ -4,10 +4,13 @@ import jakarta.persistence.Tuple;
 import org.example.dto.WinnerDTO;
 import org.example.dto.WinnerMaxMinDTO;
 import org.example.entity.Producer;
+import org.example.exception.ProducerNotFoundException;
 import org.example.repository.ProducerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+
+import static org.example.constants.ApplicationConstants.*;
 
 @Service
 public record ProducerService(ProducerRepository producerRepository) {
@@ -20,12 +23,19 @@ public record ProducerService(ProducerRepository producerRepository) {
         return producerRepository.findAll().toArray(new Producer[0]);
     }
 
+    public Producer findById(Long id) {
+        Producer producer = producerRepository.findById(id).orElse(null);
+        if (producer == null) {
+            throw new ProducerNotFoundException(EXCEPTION_PRODUCER_NOT_FOUND);
+        }
+        return producer;
+    }
+
     private WinnerDTO parseTuple(Tuple tuple) {
-        //TODO criar constantes para os nomes das colunas
-        String name = (String) tuple.get("name");
-        Integer maxYear = (Integer) tuple.get("max_year");
-        Integer minYear = (Integer) tuple.get("min_year");
-        Integer interval = (Integer) tuple.get("inter");
+        String name = (String) tuple.get(COLUMN_NAME);
+        Integer maxYear = (Integer) tuple.get(COLUMN_MAX_YEAR);
+        Integer minYear = (Integer) tuple.get(COLUMN_MIN_YEAR);
+        Integer interval = (Integer) tuple.get(COLUMN_INTER);
         return new WinnerDTO(name, minYear, maxYear, interval);
     }
 
@@ -46,4 +56,14 @@ public record ProducerService(ProducerRepository producerRepository) {
 
         return winnerMaxMinDTO;
     }
+
+    public Producer update(Long id, Producer producer) {
+        Producer producerToUpdate = producerRepository.findById(id).orElse(null);
+        if (producerToUpdate == null) {
+            throw new ProducerNotFoundException(EXCEPTION_PRODUCER_NOT_FOUND);
+        }
+        producerToUpdate.setName(producer.getName());
+        return producerRepository.save(producerToUpdate);
+    }
+
 }

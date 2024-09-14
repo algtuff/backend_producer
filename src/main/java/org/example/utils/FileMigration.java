@@ -19,12 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.example.constants.ApplicationConstants.CSV_FILE;
-import static org.example.constants.ApplicationConstants.PRODUCERS_INDEX;
-import static org.example.constants.ApplicationConstants.STUDIO_INDEX;
-import static org.example.constants.ApplicationConstants.TITLE_INDEX;
-import static org.example.constants.ApplicationConstants.WINNER_INDEX;
-import static org.example.constants.ApplicationConstants.YEAR_INDEX;
+import static org.example.constants.ApplicationConstants.*;
 
 @Component
 public class FileMigration {
@@ -44,18 +39,18 @@ public class FileMigration {
         }
     }
 
-    private Producer[] ToProducer(String[] producers) {
+    private List<Producer> ToProducer(String[] producers) {
         return Stream.of(producers)
             .map(producer -> {
                 Producer producerDTO = new Producer();
                 producerDTO.setName(producer);
                 return producerDTO;
             })
-            .toArray(Producer[]::new);
+            .toList();
     }
 
     private Movie lineToProducer(String line) {
-        String[] values = line.split(";");
+        String[] values = line.split(CSV_SPLITTER);
         Movie movie = new Movie();
 
         final String year = this.getValue(values, YEAR_INDEX);
@@ -96,11 +91,11 @@ public class FileMigration {
 
     @PostConstruct
     private void migrate() {
-        System.out.println("Migrating data from CSV file to database...");
+        System.out.println(MSG_MIGRATING_DATA);
         Movie[] movies = listMovies();
         final Producer[] producers = Arrays.stream(movies)
             .map(Movie::getProducers)
-            .flatMap(Arrays::stream)
+            .flatMap(List::stream)
             .toArray(Producer[]::new);
 
         final Producer[] producersWithoutDuplicates = Arrays.stream(producers)
@@ -121,7 +116,8 @@ public class FileMigration {
             producerController.save(producer);
         }
         for (Movie movie : movies) {
-            Stream.of(movie.getProducers())
+                movie.getProducers()
+                .stream()
                 .filter(producer -> producer.getId() == null)
                 .forEach(producer -> {
                     final Producer producerWithId = Stream.of(producersWithoutDuplicates)
@@ -132,7 +128,7 @@ public class FileMigration {
             });
             movieController.save(movie);
         }
-        System.out.println("Data migrated successfully!");
+        System.out.println(MSG_DATA_MIGRATED);
     }
 
 }

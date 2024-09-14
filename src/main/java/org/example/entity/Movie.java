@@ -2,6 +2,8 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Movie {
 
@@ -14,7 +16,7 @@ public class Movie {
     private boolean winner;
 
     @ManyToMany(cascade = CascadeType.MERGE)
-    private Producer[] producers;
+    private List<Producer> producers;
 
     public Long getMovieId() {
         return movieId;
@@ -56,11 +58,11 @@ public class Movie {
         this.studio = studio;
     }
 
-    public Producer[] getProducers() {
+    public List<Producer> getProducers() {
         return producers;
     }
 
-    public void setProducers(Producer[] producers) {
+    public void setProducers(List<Producer> producers) {
         this.producers = producers;
     }
 

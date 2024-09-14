@@ -7,6 +7,13 @@ import org.example.entity.Movie;
 @Entity
 public class Producer {
 
+    public Producer() {
+    }
+
+    public Producer(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue
     private Long id;

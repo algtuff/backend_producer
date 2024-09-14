@@ -8,8 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-import static org.example.constants.ApplicationConstants.QUERY_WINNER_MAX_INTERVAL;
-import static org.example.constants.ApplicationConstants.QUERY_WINNER_MIN_INTERVAL;
+import static org.example.constants.ApplicationConstants.*;
 
 public interface ProducerRepository extends JpaRepository<Producer, Long> {
 
