@@ -2,6 +2,14 @@ package org.example.dto;
 
 public class WinnerMaxMinDTO {
 
+    public WinnerMaxMinDTO() {
+    }
+
+    public WinnerMaxMinDTO(WinnerDTO[] min, WinnerDTO[] max) {
+        this.min = min;
+        this.max = max;
+    }
+
     private WinnerDTO[] min;
     private WinnerDTO[] max;
 

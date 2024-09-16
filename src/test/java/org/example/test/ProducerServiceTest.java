@@ -2,7 +2,9 @@ package org.example.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.example.dto.WinnerMaxMinDTO;
 import org.example.entity.Producer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -59,18 +61,29 @@ public class ProducerServiceTest {
 
     @Test
     public void testFindById() throws Exception {
-        mockMvc.perform(get("/producers/1"))
+        final var result = mockMvc.perform(get("/producers/1"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("\"id\":1")));
+            .andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        Producer producer = new ObjectMapper().readValue(content, Producer.class);
+        Assertions.assertNotNull(producer);
+        Assertions.assertEquals(1, producer.getId());
     }
 
     @Test
     public void findProducerWinnerMinMaxInterval() throws Exception {
-        mockMvc.perform(get("/producers/winner/min-max-interval"))
+        final var result = mockMvc.perform(get("/producers/winner/min-max-interval"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("min")));
+            .andReturn();
+
+        final String content = result.getResponse().getContentAsString();
+        WinnerMaxMinDTO winnerMaxMinDTO = new ObjectMapper().readValue(content, WinnerMaxMinDTO.class);
+        Assertions.assertNotNull(winnerMaxMinDTO);
+        Assertions.assertNotNull(winnerMaxMinDTO.getMin());
+        Assertions.assertNotNull(winnerMaxMinDTO.getMax());
     }
 
 

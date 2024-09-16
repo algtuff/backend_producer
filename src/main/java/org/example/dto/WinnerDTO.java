@@ -2,6 +2,9 @@ package org.example.dto;
 
 public class WinnerDTO {
 
+    public WinnerDTO() {
+    }
+
     public WinnerDTO(final String producer, final Integer previousWin, final Integer followingWin, final Integer interval) {
         this.producer = producer;
         this.interval = interval;
